@@ -9,6 +9,13 @@ nav.addEventListener("mouseover", event=> {
     nav.style.backgroundColor = "#FFE152";
     nav.style.color = "white"
 });
+//prevents nav items from refreshing page
+const anch = document.querySelectorAll(".nav-link")
+for (let i=0; i<anch.length; i++){
+    anch[i].addEventListener("click", event=>{
+        event.preventDefault()
+    })
+}
 
 //when window is resized, nav switches to bottom
 window.addEventListener("resize", event=>{
@@ -61,18 +68,34 @@ textArea.addEventListener("select", event=>{
 textArea.addEventListener("focus", event=>{
     event.target.style.background = 'rgba(0,255,255,.2)'
 })
-
-const dragContainer = document.createElement("div")
-dragContainer.setAttribute("style", "background-color: blue; height: 200px; width: 200px; margin: auto")
-
-const dropIt = document.createElement("div")
-dropIt.setAttribute("style", "background-color: orange; height: 75px; width: 75px; margin: auto")
-dropIt.textContent = "Drop Here!"
+//drag the blue square around
 const dragIt = document.createElement("div")
-dragIt.textContent = "Drag Me!"
-dragIt.setAttribute("style", "background-color: yellow; height: 75px; width: 75px; margin: auto")
+dragIt.setAttribute("style", "background-color: blue; height: 100px; width: 100px; position: absolute;")
 dragIt.setAttribute('draggable', true)
-dragIt.setAttribute('ondragstart', "event.dataTransfer.setData('text/plain',null)")
-document.querySelector(".content-pick").append(dragContainer)
-dragContainer.append(dropIt)
-dragContainer.append(dragIt)
+paragraph.append(dragIt)
+
+let shiftX, shiftY
+
+dragIt.addEventListener("dragstart", event => {
+    shiftX = event.clientX - dragIt.getBoundingClientRect().left;
+    shiftY = event.clientY - dragIt.getBoundingClientRect().top;
+})
+
+dragIt.addEventListener("dragend", event =>{
+    
+    console.log(shiftX, shiftY);
+    dragIt.style.position = "absolute";
+    dragIt.style.left = event.clientX - shiftX + "px";
+    dragIt.style.top = event.clientY - shiftY + "px";
+    console.log(event.clientY, event.clientX);
+})
+
+//2 similar nested events, prevents propogation on first mousedown
+const text1 = document.querySelector(".text-content")
+text1.addEventListener("mousedown", event=>{
+    event.stopPropagation()
+    text1.addEventListener("mousedown", event=>{
+        text1.style.backgroundColor = "orange"    
+    })
+})
+
